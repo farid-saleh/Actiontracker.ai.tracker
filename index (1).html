@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ActionTracker — Stop Drifting. Start Doing.</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#06060a;--surface:#0e0e14;--border:#1c1c28;
+    --accent:#7c5cfc;--accent2:#fc5c7d;--accent3:#5cfcb8;
+    --text:#f0f0f8;--muted:#5a5a72;--dim:#14141e;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'Space Mono',monospace;min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 20% 20%,rgba(124,92,252,.12) 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 80% 80%,rgba(252,92,125,.07) 0%,transparent 60%);pointer-events:none;z-index:0;animation:bgP 8s ease-in-out infinite alternate;}
+  @keyframes bgP{from{opacity:.6}to{opacity:1}}
+  .page{display:none;position:relative;z-index:1;}
+  .page.active{display:block;}
+
+  /* LANDING */
+  .lw{max-width:680px;margin:0 auto;padding:0 20px 80px;}
+  nav{display:flex;justify-content:space-between;align-items:center;padding:24px 0;border-bottom:1px solid var(--border);margin-bottom:80px;animation:fadeDown .6s ease both;}
+  .logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:900;letter-spacing:2px;text-transform:uppercase;}
+  .logo span{color:var(--accent);}
+  .nav-tag{font-size:8px;letter-spacing:3px;color:var(--muted);border:1px solid var(--border);padding:4px 10px;text-transform:uppercase;}
+  .hero{text-align:center;margin-bottom:80px;animation:fadeUp .7s .1s ease both;opacity:0;}
+  .hero-tag{display:inline-block;font-size:8px;letter-spacing:4px;color:var(--accent3);border:1px solid rgba(92,252,184,.3);padding:5px 14px;text-transform:uppercase;margin-bottom:28px;animation:glowP 3s ease infinite;}
+  @keyframes glowP{0%,100%{box-shadow:0 0 0 rgba(92,252,184,0)}50%{box-shadow:0 0 16px rgba(92,252,184,.2)}}
+  .hero h1{font-family:'Syne',sans-serif;font-size:clamp(36px,8vw,70px);font-weight:900;line-height:1.05;letter-spacing:-2px;margin-bottom:24px;}
+  .hero h1 .ac{color:var(--accent);display:block;}
+  .hero p{font-size:13px;line-height:1.9;color:var(--muted);max-width:480px;margin:0 auto 40px;}
+  .problems{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-bottom:80px;animation:fadeUp .7s .2s ease both;opacity:0;}
+  .prob{background:var(--surface);padding:24px 20px;border-top:2px solid transparent;transition:border-color .3s;}
+  .prob:hover{border-color:var(--accent2);}
+  .prob-icon{font-size:20px;margin-bottom:10px;}
+  .prob-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:6px;}
+  .prob-text{font-size:9px;color:var(--muted);line-height:1.8;}
+  .features{margin-bottom:80px;animation:fadeUp .7s .3s ease both;opacity:0;}
+  .sec-div{font-size:8px;letter-spacing:4px;color:var(--muted);text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:12px;}
+  .sec-div::after{content:'';flex:1;height:1px;background:var(--border);}
+  .feat-list{display:flex;flex-direction:column;gap:2px;}
+  .feat-item{background:var(--surface);border:1px solid var(--border);padding:20px 22px;display:flex;align-items:flex-start;gap:16px;transition:border-color .2s,transform .2s;}
+  .feat-item:hover{border-color:var(--accent);transform:translateX(4px);}
+  .feat-num{font-family:'Syne',sans-serif;font-size:28px;font-weight:900;color:var(--border);line-height:1;flex-shrink:0;transition:color .2s;}
+  .feat-item:hover .feat-num{color:var(--accent);}
+  .feat-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:5px;}
+  .feat-desc{font-size:9px;color:var(--muted);line-height:1.8;}
+  .proof{margin-bottom:80px;animation:fadeUp .7s .35s ease both;opacity:0;}
+  .proof-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .proof-card{background:var(--surface);border:1px solid var(--border);padding:20px;position:relative;}
+  .proof-card::before{content:'"';font-family:'Syne',sans-serif;font-size:60px;font-weight:900;color:var(--accent);line-height:.8;position:absolute;top:14px;left:16px;opacity:.3;}
+  .proof-text{font-size:10px;color:var(--muted);line-height:1.8;margin-bottom:14px;padding-top:20px;}
+  .proof-name{font-size:8px;letter-spacing:2px;color:var(--accent3);text-transform:uppercase;}
+  .pricing-box{background:var(--surface);border:1px solid var(--border);padding:40px;margin-bottom:40px;text-align:center;position:relative;overflow:hidden;animation:fadeUp .7s .4s ease both;opacity:0;}
+  .pricing-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));}
+  .pricing-tag{font-size:8px;letter-spacing:4px;color:var(--muted);text-transform:uppercase;margin-bottom:20px;}
+  .pricing-name{font-family:'Syne',sans-serif;font-size:28px;font-weight:900;margin-bottom:8px;}
+  .pricing-desc{font-size:10px;color:var(--muted);margin-bottom:32px;line-height:1.8;}
+  .inc-list{display:flex;flex-direction:column;gap:8px;text-align:left;max-width:340px;margin:0 auto 36px;}
+  .inc-item{display:flex;align-items:center;gap:10px;font-size:10px;color:var(--muted);}
+  .inc-item::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent3);flex-shrink:0;}
+  .cta-btn{display:inline-block;width:100%;max-width:380px;background:var(--accent);border:none;color:#fff;font-family:'Syne',sans-serif;font-size:14px;font-weight:900;letter-spacing:3px;text-transform:uppercase;padding:18px 32px;cursor:pointer;transition:all .2s;}
+  .cta-btn:hover{background:#6a4aed;transform:translateY(-2px);box-shadow:0 12px 40px rgba(124,92,252,.4);}
+  .cta-sub{font-size:9px;color:var(--muted);margin-top:12px;letter-spacing:1px;}
+
+  /* APP */
+  .aw{max-width:700px;margin:0 auto;padding:24px 16px 80px;}
+  .app-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:20px;border-bottom:1px solid var(--border);margin-bottom:28px;}
+  .app-logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:900;letter-spacing:2px;}
+  .app-logo span{color:var(--accent);}
+  .ubar{display:flex;align-items:center;gap:10px;}
+  .uname{font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+  .back-btn{font-size:8px;letter-spacing:2px;color:var(--muted);background:none;border:1px solid var(--border);padding:4px 10px;cursor:pointer;font-family:'Space Mono',monospace;text-transform:uppercase;transition:all .2s;}
+  .back-btn:hover{border-color:var(--accent2);color:var(--accent2);}
+  .card{background:var(--surface);border:1px solid var(--border);padding:22px;margin-bottom:16px;position:relative;overflow:hidden;}
+  .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ct,var(--accent));}
+  .card-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:800;letter-spacing:1px;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+  .ai-badge{font-size:7px;letter-spacing:2px;background:rgba(124,92,252,.2);color:var(--accent);padding:2px 8px;text-transform:uppercase;}
+  .field{margin-bottom:12px;}
+  .fl{font-size:8px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:5px;}
+  textarea,input[type=text]{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:11px;padding:10px 12px;outline:none;transition:border-color .2s;resize:none;}
+  textarea:focus,input[type=text]:focus{border-color:var(--accent);}
+  .gen-btn{width:100%;background:var(--accent);border:none;color:#fff;font-family:'Syne',sans-serif;font-size:11px;font-weight:900;letter-spacing:3px;text-transform:uppercase;padding:13px;cursor:pointer;transition:all .2s;margin-top:4px;}
+  .gen-btn:hover{background:#6a4aed;}
+  .gen-btn:disabled{background:var(--dim);color:var(--muted);cursor:not-allowed;}
+  .tasks-wrap{display:flex;flex-direction:column;gap:8px;}
+  .task-item{background:var(--dim);border:1px solid var(--border);padding:14px 16px;display:flex;align-items:flex-start;gap:14px;transition:border-color .2s;cursor:pointer;}
+  .task-item:hover{border-color:var(--accent);}
+  .task-item.done{border-color:var(--accent3);opacity:.6;}
+  .task-num{font-family:'Syne',sans-serif;font-size:22px;font-weight:900;color:var(--border);line-height:1;flex-shrink:0;transition:color .2s;}
+  .task-item:hover .task-num{color:var(--accent);}
+  .task-item.done .task-num{color:var(--accent3);}
+  .task-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:4px;}
+  .task-desc{font-size:9px;color:var(--muted);line-height:1.8;}
+  .task-check{font-size:16px;}
+  .cq{font-size:11px;color:var(--text);line-height:1.9;margin-bottom:14px;padding:14px;background:var(--dim);border-left:2px solid var(--accent);font-style:italic;}
+  .btn-row{display:flex;gap:8px;margin-top:10px;}
+  .sm-btn{flex:1;background:var(--dim);border:1px solid var(--border);color:var(--text);font-family:'Syne',sans-serif;font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:10px;cursor:pointer;transition:all .2s;}
+  .sm-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .sm-btn.pr{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .sm-btn.pr:hover{background:#6a4aed;}
+  .aq-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+  .aq{background:var(--dim);border:1px solid var(--border);padding:12px 14px;font-size:10px;color:var(--text);line-height:1.8;display:flex;gap:10px;}
+  .aq-n{color:var(--accent);font-weight:700;flex-shrink:0;}
+  .streak-row{display:flex;gap:4px;margin-top:12px;}
+  .sb{flex:1;height:20px;background:var(--dim);transition:background .3s;}
+  .sb.done{background:var(--accent);}
+  .sb.now{background:var(--accent3);animation:pulse 1.5s ease infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .day-labels{display:flex;justify-content:space-between;margin-top:5px;}
+  .day-labels span{font-size:7px;color:var(--muted);}
+  .ao{font-size:11px;line-height:2;color:var(--muted);white-space:pre-wrap;min-height:30px;}
+  .ao.loading::after{content:'';display:inline-block;width:8px;height:14px;background:var(--accent);animation:blink .8s ease infinite;vertical-align:text-bottom;margin-left:2px;}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+  .err{background:#1a0a0e;border:1px solid var(--accent2);padding:12px;font-size:10px;color:var(--accent2);line-height:1.8;margin-top:10px;display:none;}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(70px);background:var(--accent3);color:var(--bg);font-family:'Syne',sans-serif;font-size:10px;font-weight:900;letter-spacing:3px;padding:10px 22px;z-index:99;transition:transform .35s cubic-bezier(.34,1.56,.64,1);pointer-events:none;}
+  .toast.show{transform:translateX(-50%) translateY(0);}
+  @keyframes fadeDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- LANDING -->
+<div class="page active" id="landingPage">
+<div class="lw">
+  <nav>
+    <div class="logo">Action<span>Tracker</span></div>
+    <div class="nav-tag">Accountability OS</div>
+  </nav>
+  <div class="hero">
+    <div class="hero-tag">For Solo Owners · Freelancers · Coaches</div>
+    <h1>Stop Drifting.<br><span class="ac">Start Doing.</span></h1>
+    <p>You have 100 ideas and zero follow-through. ActionTracker kills Shiny Object Syndrome with automated AI accountability that runs while you sleep.</p>
+  </div>
+  <div class="problems">
+    <div class="prob"><div class="prob-icon">🌀</div><div class="prob-title">Shiny Object Syndrome</div><div class="prob-text">Jumping between ideas every week, finishing nothing that matters.</div></div>
+    <div class="prob"><div class="prob-icon">💸</div><div class="prob-title">Money Leaks</div><div class="prob-text">Subscriptions and habits draining profit you never notice.</div></div>
+    <div class="prob"><div class="prob-icon">😶</div><div class="prob-title">No Accountability</div><div class="prob-text">No one checking in. No system. Just you vs. distractions.</div></div>
+  </div>
+  <div class="features">
+    <div class="sec-div">What You Get</div>
+    <div class="feat-list">
+      <div class="feat-item"><div class="feat-num">01</div><div><div class="feat-name">Monthly Money Audit</div><div class="feat-desc">AI asks the right questions every month to surface where your money quietly leaks. No spreadsheet needed.</div></div></div>
+      <div class="feat-item"><div class="feat-num">02</div><div><div class="feat-name">AI-Generated Top 3 Tasks</div><div class="feat-desc">Every session your AI analyzes your business and gives you exactly 3 tasks. Not 10. Not 50. Three.</div></div></div>
+      <div class="feat-item"><div class="feat-num">03</div><div><div class="feat-name">Automated Weekly Check-ins</div><div class="feat-desc">The system asks what you did and holds you to it. 100% automated. Zero manual effort on your end.</div></div></div>
+    </div>
+  </div>
+  <div class="proof">
+    <div class="sec-div">What People Say</div>
+    <div class="proof-grid">
+      <div class="proof-card"><div class="proof-text">I went from juggling 12 half-baked ideas to finishing one that actually makes money. The weekly check-in is brutal in the best way.</div><div class="proof-name">Marcus R. — Freelance Dev</div></div>
+      <div class="proof-card"><div class="proof-text">The monthly audit found $340 in subscriptions I forgot about. Paid for itself in the first week.</div><div class="proof-name">Layla S. — Online Coach</div></div>
+    </div>
+  </div>
+  <div class="pricing-box">
+    <div class="pricing-tag">One-Time Access · Lifetime</div>
+    <div class="pricing-name">ActionTracker</div>
+    <div class="pricing-desc">Pay once. Use forever. No monthly fees. No subscriptions. Ever.</div>
+    <div class="inc-list">
+      <div class="inc-item">AI Top 3 daily task generator</div>
+      <div class="inc-item">Automated weekly check-in system</div>
+      <div class="inc-item">Monthly money audit AI</div>
+      <div class="inc-item">Lifetime access, no recurring fees</div>
+      <div class="inc-item">Works for any solo business type</div>
+    </div>
+    <button class="cta-btn" onclick="goApp()">GET INSTANT ACCESS</button>
+    <div class="cta-sub">One-time payment. Instant access. No subscriptions ever.</div>
+  </div>
+</div>
+</div>
+
+<!-- APP -->
+<div class="page" id="appPage">
+<div class="aw">
+  <div class="app-header">
+    <div class="app-logo">Action<span>Tracker</span></div>
+    <div class="ubar">
+      <div class="uname" id="uname">Dashboard</div>
+      <button class="back-btn" onclick="goLand()">← Back</button>
+    </div>
+  </div>
+  <div class="card" style="--ct:#7c5cfc">
+    <div class="card-title">Your Business</div>
+    <div class="field"><div class="fl">Business Name</div><input type="text" id="bizName" placeholder="e.g. ActionTracker..."></div>
+    <div class="field"><div class="fl">What You Do</div><textarea id="bizDesc" rows="2" placeholder="e.g. I sell accountability software to freelancers..."></textarea></div>
+    <div class="field"><div class="fl">Biggest Challenge Right Now</div><textarea id="bizChal" rows="2" placeholder="e.g. I keep jumping between projects..."></textarea></div>
+    <button class="gen-btn" id="genBtn" onclick="genAll()">GENERATE MY PLAN</button>
+    <div class="err" id="errBox"></div>
+  </div>
+  <div class="card" id="tasksCard" style="--ct:#7c5cfc;display:none">
+    <div class="card-title">Top 3 Tasks Today <span class="ai-badge">AI</span></div>
+    <div class="tasks-wrap" id="tasksList"><div class="ao loading" id="tasksLoad">Generating your tasks</div></div>
+  </div>
+  <div class="card" id="checkinCard" style="--ct:#fc5c7d;display:none">
+    <div class="card-title">Weekly Check-in <span class="ai-badge">AI</span></div>
+    <div class="cq" id="cqText">Loading your question...</div>
+    <textarea id="cqAns" rows="3" placeholder="Be honest. What actually happened this week?"></textarea>
+    <div class="btn-row">
+      <button class="sm-btn" onclick="newCQ()">NEW QUESTION</button>
+      <button class="sm-btn pr" onclick="submitCQ()">SUBMIT</button>
+    </div>
+    <div class="ao" id="cqResp" style="margin-top:14px;display:none"></div>
+  </div>
+  <div class="card" id="auditCard" style="--ct:#5cfcb8;display:none">
+    <div class="card-title">Monthly Money Audit <span class="ai-badge">AI</span></div>
+    <div class="aq-list" id="auditList"><div class="ao loading" id="auditLoad">Generating audit questions</div></div>
+    <button class="sm-btn pr" style="width:100%" onclick="runAudit()">REFRESH AUDIT</button>
+  </div>
+  <div class="card" id="streakCard" style="--ct:#5cfcb8;display:none">
+    <div class="card-title">Weekly Streak</div>
+    <div class="streak-row" id="streakRow"></div>
+    <div class="day-labels"><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span></div>
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// All API calls go through YOUR Vercel backend. Key is never in this file.
+const API = '/api/chat';
+
+function goApp(){document.getElementById('landingPage').classList.remove('active');document.getElementById('appPage').classList.add('active');window.scrollTo(0,0);loadSaved();}
+function goLand(){document.getElementById('appPage').classList.remove('active');document.getElementById('landingPage').classList.add('active');window.scrollTo(0,0);}
+
+async function callBackend(system, user, stream, onChunk, onDone) {
+  showErr('');
+  try {
+    const res = await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ system, user, stream: stream || false })
+    });
+    if (!res.ok) { const e=await res.json(); showErr('Error: '+(e.error||res.status)); return ''; }
+    if (!stream) { const d=await res.json(); return d.choices?.[0]?.message?.content||''; }
+    const reader=res.body.getReader(), dec=new TextDecoder(); let buf='';
+    while(true){
+      const{done,value}=await reader.read(); if(done)break;
+      buf+=dec.decode(value,{stream:true});
+      const lines=buf.split('\n'); buf=lines.pop();
+      for(const l of lines){
+        if(!l.startsWith('data:'))continue;
+        const d=l.slice(5).trim(); if(d==='[DONE]'){onDone&&onDone();return;}
+        try{const j=JSON.parse(d);const c=j.choices?.[0]?.delta?.content;if(c)onChunk(c);}catch{}
+      }
+    }
+    onDone&&onDone();
+  } catch(e){ showErr('Connection error. Check your internet.'); }
+}
+
+async function genAll(){
+  const biz=document.getElementById('bizName').value.trim();
+  const desc=document.getElementById('bizDesc').value.trim();
+  const chal=document.getElementById('bizChal').value.trim();
+  if(!biz||!desc){showErr('Fill in your business name and what you do.');return;}
+  localStorage.setItem('at_biz',biz);localStorage.setItem('at_desc',desc);localStorage.setItem('at_chal',chal);
+  document.getElementById('uname').textContent=biz;
+  const btn=document.getElementById('genBtn');btn.disabled=true;btn.textContent='GENERATING...';
+  ['tasksCard','checkinCard','auditCard','streakCard'].forEach(id=>document.getElementById(id).style.display='block');
+  const ctx='Business: '+biz+'. What they do: '+desc+'. Biggest challenge: '+chal;
+  buildStreak();
+  await Promise.all([genTasks(ctx),genCQ(ctx),genAudit(ctx)]);
+  btn.disabled=false;btn.textContent='REGENERATE PLAN';
+  toast('Plan generated!');
+}
+
+async function genTasks(ctx){
+  const load=document.getElementById('tasksLoad');
+  load.style.display='block';load.className='ao loading';load.textContent='Generating your tasks';
+  let full='';
+  await callBackend(
+    'You are a brutal accountability coach. Give EXACTLY 3 tasks. Format:\nTASK 1: [title]\nDESC: [one sentence]\n\nTASK 2: [title]\nDESC: [one sentence]\n\nTASK 3: [title]\nDESC: [one sentence]\nBe direct. No fluff.',
+    ctx+'. What are the 3 most important tasks to do TODAY?',
+    true, c=>{full+=c;}, ()=>{load.style.display='none';renderTasks(full);localStorage.setItem('at_tasks',full);}
+  );
+}
+
+function renderTasks(text){
+  const list=document.getElementById('tasksList');list.innerHTML='';
+  const blocks=text.split(/\n\s*\n/).filter(b=>b.trim());let n=0;
+  blocks.forEach(block=>{
+    const tm=block.match(/TASK \d+:\s*(.+)/i),dm=block.match(/DESC:\s*(.+)/i);
+    if(tm){n++;
+      const el=document.createElement('div');el.className='task-item';
+      el.innerHTML='<div class="task-num">0'+n+'</div><div style="flex:1"><div class="task-title">'+tm[1].trim()+'</div><div class="task-desc">'+(dm?dm[1].trim():'')+'</div></div><div class="task-check">☐</div>';
+      el.onclick=function(){this.classList.toggle('done');this.querySelector('.task-check').textContent=this.classList.contains('done')?'✓':'☐';};
+      list.appendChild(el);
+    }
+  });
+  if(n===0)list.innerHTML='<div class="ao" style="white-space:pre-wrap">'+text+'</div>';
+}
+
+async function genCQ(ctx){
+  const qEl=document.getElementById('cqText');qEl.textContent='Generating...';
+  const q=await callBackend('You are an accountability coach. Ask ONE powerful direct weekly check-in question. One sentence only. No fluff.',ctx+'. Generate one check-in question.',false);
+  qEl.textContent=q.trim().replace(/^["']|["']$/g,'');
+}
+
+async function newCQ(){
+  const ctx='Business: '+localStorage.getItem('at_biz')+'. '+localStorage.getItem('at_desc');
+  genCQ(ctx);document.getElementById('cqAns').value='';document.getElementById('cqResp').style.display='none';
+}
+
+async function submitCQ(){
+  const ans=document.getElementById('cqAns').value.trim();
+  const q=document.getElementById('cqText').textContent;
+  const resp=document.getElementById('cqResp');
+  if(!ans){toast('Write your answer first');return;}
+  resp.style.display='block';resp.className='ao loading';resp.textContent='Analyzing';
+  let full='';
+  await callBackend(
+    'You are a direct accountability coach. Give honest actionable feedback in 2-3 sentences. No cheerleading. Be real.',
+    'Question: "'+q+'". Their answer: "'+ans+'". Give feedback.',
+    true, c=>{resp.className='ao';full+=c;resp.textContent=full;}, ()=>toast('Submitted!')
+  );
+}
+
+async function genAudit(ctx){
+  const load=document.getElementById('auditLoad');load.style.display='block';load.className='ao loading';
+  const result=await callBackend('You are a business auditor. Generate exactly 5 monthly audit questions to find money leaks. Number them 1-5. Each on its own line. Be specific.',ctx+'. Generate 5 monthly money audit questions.',false);
+  const list=document.getElementById('auditList');list.innerHTML='';
+  result.split('\n').filter(l=>l.trim()&&/^\d/.test(l.trim())).forEach(line=>{
+    const m=line.match(/^(\d+)[.)]\s*(.+)/);
+    if(m){const d=document.createElement('div');d.className='aq';d.innerHTML='<span class="aq-n">'+m[1]+'.</span>'+m[2].trim();list.appendChild(d);}
+  });
+  if(!list.children.length)list.innerHTML='<div class="ao" style="white-space:pre-wrap">'+result+'</div>';
+}
+
+async function runAudit(){genAudit('Business: '+localStorage.getItem('at_biz')+'. '+localStorage.getItem('at_desc'));}
+
+function buildStreak(){
+  const today=new Date(),ti=today.getDay()===0?6:today.getDay()-1;
+  let s=JSON.parse(localStorage.getItem('at_streak')||'[0,0,0,0,0,0,0]');
+  s[ti]=1;localStorage.setItem('at_streak',JSON.stringify(s));
+  const row=document.getElementById('streakRow');row.innerHTML='';
+  s.forEach((v,i)=>{const b=document.createElement('div');b.className='sb'+(i===ti?' now':(v?' done':''));row.appendChild(b);});
+}
+
+function showErr(msg){const b=document.getElementById('errBox');if(msg){b.style.display='block';b.textContent=msg;}else b.style.display='none';}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+
+function loadSaved(){
+  const biz=localStorage.getItem('at_biz');if(!biz)return;
+  document.getElementById('bizName').value=biz;
+  document.getElementById('bizDesc').value=localStorage.getItem('at_desc')||'';
+  document.getElementById('bizChal').value=localStorage.getItem('at_chal')||'';
+  document.getElementById('genBtn').textContent='REGENERATE PLAN';
+  document.getElementById('uname').textContent=biz;
+  const saved=localStorage.getItem('at_tasks');
+  if(saved){
+    ['tasksCard','checkinCard','auditCard','streakCard'].forEach(id=>document.getElementById(id).style.display='block');
+    document.getElementById('tasksLoad').style.display='none';
+    renderTasks(saved);buildStreak();
+    const ctx='Business: '+biz+'. '+localStorage.getItem('at_desc')+'. Challenge: '+localStorage.getItem('at_chal');
+    genCQ(ctx);genAudit(ctx);
+  }
+}
+</script>
+</body>
+</html>
